@@ -18,6 +18,7 @@ To request details on a Magic: the Gathering card with CardBot, use "@CardBot ge
 More functionality potentially coming soon!
 """
 
+
 def parse_bot_commands(slack_events):
     """
     Parses events from Slack API to get bot commands.
