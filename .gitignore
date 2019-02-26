@@ -1,0 +1,4 @@
+.idea
+__pycache__
+venv
+bot_key.txt
