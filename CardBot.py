@@ -57,16 +57,16 @@ def handle_command(cmd, chnl):
     args = cmd.split()
     response = None
     flags = None
-    if args[0] == '-h' or args[0].lower() == 'help':
+    if args[0] == "-h" or args[0].lower() == "help":
         response = HELP_TEXT
     else:
         for arg in args:
-            if arg.startswith('-'):
+            if arg.startswith("-"):
                 flags.append(arg)
                 args.remove(arg)
         if cmd.startswith("get"):
             args.remove("get")
-            args = ' '.join(args)
+            args = " ".join(args)
             response = MagicParser.parse_magic_card(args)
 
     # send response back to the channel
@@ -75,7 +75,7 @@ def handle_command(cmd, chnl):
                           text=response or default_response)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if slack_client.rtm_connect(with_team_state=False):
         print("CardBot initialized and running!")
         # Read bot's user ID with API

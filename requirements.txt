@@ -1,3 +1,2 @@
 slackclient
-mtgsdk
 scrython
