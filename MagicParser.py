@@ -4,7 +4,7 @@ import scrython
 def parse_magic_card(card_name):
     try:
         card = scrython.cards.Named(fuzzy=card_name)
-        if card.card_faces():
+        if "transform" in card.layout() or "split" in card.layout() or "flip" in card.layout():
             return parse_slack_response_multi_faced(card)
         else:
             return parse_slack_response(card)
