@@ -132,11 +132,19 @@ def parse_slack_response_multi_faced(card):
 
 
 def replace_emojis(response):
+    # this really should use regex but regex breaks my brain. spaghetti it is
     response = response.replace("½", "half")
     response = response.replace("∞", "inf")
-    response = response.replace("/", "")
     response = response.replace("{", ":mtg-")
     response = response.replace("}", ":")
+
+    # remove the slash for phyrexian/hybrid
+    response = response.replace("/P", "P")
+    response = response.replace("/W", "W")
+    response = response.replace("/U", "U")
+    response = response.replace("/B", "B")
+    response = response.replace("/R", "R")
+    response = response.replace("/G", "G")
 
     # awkward hack for gleemax, which has the only mana symbol with no emoji
     response = response.replace(":mtg-1000000:", "{1000000}")
