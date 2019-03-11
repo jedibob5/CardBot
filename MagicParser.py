@@ -52,9 +52,9 @@ def parse_slack_response(card):
 {PT}{loyalty}
     """.format(
         cardname=card.name(),
-        mana_cost=mana_cost,
+        mana_cost=replace_emojis(mana_cost),
         type_line=card.type_line(),
-        oracle_text=card_text,
+        oracle_text=replace_emojis(card_text),
         flavor_text=flavor_text,
         PT=pt,
         loyalty=loyalty,
@@ -115,9 +115,9 @@ def parse_slack_response_multi_faced(card):
 {PT}{loyalty}
             """.format(
                 cardname=face["name"],
-                mana_cost=mana_cost,
+                mana_cost=replace_emojis(mana_cost),
                 type_line=face["type_line"],
-                oracle_text=card_text,
+                oracle_text=replace_emojis(card_text),
                 flavor_text=flavor_text,
                 PT=pt,
                 loyalty=loyalty,
@@ -128,4 +128,16 @@ def parse_slack_response_multi_faced(card):
         if not line.strip():
             response_lines.remove(line)
     response = "\n".join(response_lines)
+    return response
+
+
+def replace_emojis(response):
+    response = response.replace("½", "half")
+    response = response.replace("∞", "inf")
+    response = response.replace("/", "")
+    response = response.replace("{", ":mtg-")
+    response = response.replace("}", ":")
+
+    # awkward hack for gleemax, which has the only mana symbol with no emoji
+    response = response.replace(":mtg-1000000:", "{1000000}")
     return response
