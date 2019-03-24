@@ -56,7 +56,7 @@ def parse_slack_response(card):
         type_line=card.type_line(),
         oracle_text=replace_emojis(card_text),
         flavor_text=flavor_text,
-        PT=pt,
+        PT=pt.replace("*", "★"),
         loyalty=loyalty,
         imageurl=card.image_uris(image_type="normal")
     )
@@ -119,7 +119,7 @@ def parse_slack_response_multi_faced(card):
                 type_line=face["type_line"],
                 oracle_text=replace_emojis(card_text),
                 flavor_text=flavor_text,
-                PT=pt,
+                PT=pt.replace("*", "★"),
                 loyalty=loyalty,
                 imageurl=image_uri
         )

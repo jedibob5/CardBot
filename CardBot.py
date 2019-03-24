@@ -81,9 +81,12 @@ if __name__ == "__main__":
         # Read bot's user ID with API
         starterbot_id = slack_client.api_call("auth.test")["user_id"]
         while True:
-            command, channel = parse_bot_commands(slack_client.rtm_read())
-            if command:
-                handle_command(command, channel)
+            try:
+                command, channel = parse_bot_commands(slack_client.rtm_read())
+                if command:
+                    handle_command(command, channel)
+            except SlackClient.SlackConnectionError as e:
+                print(str(e))
             time.sleep(RTM_READ_DELAY)
     else:
         print("Connection failed. Stack trace above")
