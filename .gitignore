@@ -4,3 +4,4 @@ venv
 bot_key.txt
 *.pem
 *.ppk
+nohup.out

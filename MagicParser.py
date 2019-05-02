@@ -12,6 +12,8 @@ def parse_magic_card(card_name):
         print(str(e))
         if "No cards found matching" in str(e):
             return "Sorry, card not found!"
+        else if "Too many cards match ambiguous name" in str(e):
+            return "Too many cards matched your query. Try a more specific request."
         else:
             return "Oops. Something went wrong. Let Robert know what you were querying and he'll look into it."
 
