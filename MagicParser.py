@@ -4,7 +4,8 @@ import scrython
 def parse_magic_card(card_name):
     try:
         card = scrython.cards.Named(fuzzy=card_name)
-        if "transform" in card.layout() or "split" in card.layout() or "flip" in card.layout():
+        if "transform" in card.layout() or "split" in card.layout() or "flip" in card.layout()\
+                or "adventure" in card.layout():
             return parse_slack_response_multi_faced(card)
         else:
             return parse_slack_response(card)
@@ -20,7 +21,15 @@ def parse_magic_card(card_name):
 
 def parse_slack_response(card):
     try:
+        image_uri = card.image_uris(image_type="normal")
+    except Exception as e:
+        print(str(e))
+        image_uri = "*An error occurred while retrieving this card's image URL.*"
+    try:
         card_text = card.oracle_text()
+        # Italicize reminder text
+        card_text = card_text.replace("(", "_(")
+        card_text = card_text.replace(")", ")_")
     except KeyError:
         card_text = ""
     try:
@@ -60,7 +69,7 @@ def parse_slack_response(card):
         flavor_text=flavor_text,
         PT=pt.replace("*", "★"),
         loyalty=loyalty,
-        imageurl=card.image_uris(image_type="normal")
+        imageurl=image_uri
     )
     response_lines = response.split("\n")
     for line in response_lines:
@@ -73,13 +82,19 @@ def parse_slack_response(card):
 def parse_slack_response_multi_faced(card):
     response = ""
     if "transform" not in card.layout():
-        response += card.image_uris(image_type="normal")
+        try:
+            response += card.image_uris(image_type="normal")
+        except Exception as e:
+            print(str(e))
+            response += "*An error occurred while retrieving this card's image URL.*"
         transform = False
     else:
         transform = True
     for face in card.card_faces():
         try:
             card_text = face["oracle_text"]
+            card_text = card_text.replace("(", "_(")
+            card_text = card_text.replace(")", ")_")
         except KeyError:
             card_text = ""
         try:
@@ -99,12 +114,15 @@ def parse_slack_response_multi_faced(card):
             mana_cost = face["mana_cost"]
         else:
             mana_cost = ""
-        if "Planeswalker" in face["type_line"]:
+        loyalty = ""
+        if "loyalty" in face.keys():
             loyalty = "Loyalty: " + face["loyalty"]
-        else:
-            loyalty = ""
         if transform:
-            image_uri = face["image_uris"]["normal"]
+            try:
+                image_uri = face["image_uris"]["normal"]
+            except Exception as e:
+                print(str(e))
+                image_uri = "*An error occurred while retrieving the image URL of the back face of this card.*"
         else:
             image_uri = ""
 
