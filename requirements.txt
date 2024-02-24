@@ -1,2 +1,3 @@
-slackclient
-scrython
+slack-sdk==3.27.0
+slack_bolt==1.18.1
+nest-asyncio==1.5.6
