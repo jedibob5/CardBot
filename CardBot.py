@@ -18,26 +18,24 @@ More functionality potentially coming soon!
 """
 
 @app.event("app_mention")
-def handle_event(event, context, client, say):
+def handle_mention(event):
     message = event["text"]
     print(message)
     cmd = strip_bot_mention(message)
-
     args = cmd.split()
     response = None
-    flags = None
-    if args[0] == "-h" or args[0].lower() == "help":
+    flags = []
+    for arg in args:
+        if arg.startswith("-"):
+            flags.append(arg)
+            args.remove(arg)
+    if (args and args[0].lower() == "help") or (flags and "-h" in flags):
         response = HELP_TEXT
-    else:
-        for arg in args:
-            if arg.startswith("-"):
-                flags.append(arg)
-                args.remove(arg)
-        if cmd.startswith("get"):
-            args.remove("get")
-            args = " ".join(args)
-            response = MagicParser.parse_magic_card(args)
-    say(response or DEFAULT_RESPONSE)
+    if not response and cmd.startswith("get"):
+        args.remove("get")
+        args = " ".join(args)
+        response = MagicParser.parse_magic_card(args)
+    app.client.chat_postMessage(channel=event["channel"], text=response or DEFAULT_RESPONSE, thread_ts=event.get("thread_ts"))
 
 def strip_bot_mention(message_text):
     """
